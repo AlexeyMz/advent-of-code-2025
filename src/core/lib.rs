@@ -4,4 +4,4 @@ mod project;
 
 pub use grid::*;
 pub use path_find::*;
-pub use project::get_data_path;
+pub use project::*;

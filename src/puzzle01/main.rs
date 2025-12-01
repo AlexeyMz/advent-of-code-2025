@@ -1,14 +1,14 @@
-use core::{get_data_path};
+use core::{get_data_path, MeasureElapsed};
 use std::fs::{read_to_string};
 
 use regex::Regex;
 
 fn main() {
-    use std::time::Instant;
-    let before = Instant::now();
+    let mut time = MeasureElapsed::start();
     basic().unwrap();
+    time.print_measured("[basic]");
     advanced().unwrap();
-    println!("Elapsed time: {:.2?}", before.elapsed());
+    time.print_measured("[advanced]");
 }
 
 fn basic() -> Result<(), String> {
@@ -44,7 +44,7 @@ fn advanced() -> Result<(), String> {
         .map(|line| parser.parse(line))
         .collect::<Result<Vec<i32>, String>>()?;
 
-    let debug = false;
+    let debug = std::env::var("DEBUG").is_ok();
 
     let mut position = 50;
     let mut secret_code = 0;
