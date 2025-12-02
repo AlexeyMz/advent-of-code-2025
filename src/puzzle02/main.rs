@@ -148,7 +148,7 @@ fn can_construct_from_duplicated_part(n: i64, digits: u32) -> bool {
                     continue 'next_size;
                 }
             }
-            return  true;
+            return true;
         }
     }
     return false;
