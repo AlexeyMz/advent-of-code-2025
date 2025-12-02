@@ -1,6 +1,6 @@
 //! Day 2: Gift Shop
 use core::{get_data_path, MeasureElapsed};
-use std::{fs::read_to_string, ops::RangeInclusive};
+use std::{collections::HashSet, fs::read_to_string, ops::RangeInclusive};
 
 fn main() {
     let mut time = MeasureElapsed::start();
@@ -8,6 +8,8 @@ fn main() {
     time.print_measured("[basic]");
     advanced().unwrap();
     time.print_measured("[advanced]");
+    advanced_large_range().unwrap();
+    time.print_measured("[advanced_large_range]");
 }
 
 fn basic() -> Result<(), String> {
@@ -69,6 +71,48 @@ fn advanced() -> Result<(), String> {
                 }
             }
         }
+    }
+
+    println!("Total of multi-duplicated invalid IDs: {total}");
+
+    return Ok(());
+}
+
+fn advanced_large_range() -> Result<(), String> {
+    let ranges = vec![1..=2_i64.pow(32)];
+
+    let mut invalid_ids = HashSet::new();
+    for range in ranges {
+        let sub_ranges: Vec<RangeInclusive<i64>> = split_range_by_digit_count(range.clone());
+        eprintln!("Split {:?} into sub ranges: {:?}", range, sub_ranges);
+
+        for sub_range in sub_ranges {
+            eprintln!("Sub-range: {:?}", sub_range);
+            let digits = digit_count(*sub_range.start());
+
+            for part_size in 1..=(digits / 2) {
+                if digits % part_size == 0 {
+                    let part_count = digits / part_size;
+                    let min = 10_i64.pow(part_size - 1);
+                    let max = 10_i64.pow(part_size);
+                    for part in min..max {
+                        let mut id = part;
+                        for _ in 1..part_count {
+                            id *= max;
+                            id += part;
+                        }
+                        if sub_range.contains(&id) {
+                            invalid_ids.insert(id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let mut total: i128 = 0;
+    for id in invalid_ids {
+        total += id as i128;
     }
 
     println!("Total of multi-duplicated invalid IDs: {total}");
