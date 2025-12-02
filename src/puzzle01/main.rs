@@ -1,3 +1,4 @@
+//! Day 1: Secret Entrance
 use core::{get_data_path, MeasureElapsed};
 use std::fs::{read_to_string};
 
@@ -32,7 +33,7 @@ fn basic() -> Result<(), String> {
 
     println!("Secret code is {secret_code}");
 
-    return Result::Ok(());
+    return Ok(());
 }
 
 fn advanced() -> Result<(), String> {
@@ -82,7 +83,7 @@ fn advanced() -> Result<(), String> {
 
     println!("Secret code by CLICK method is {secret_code}");
 
-    return Result::Ok(());
+    return Ok(());
 }
 
 struct RotationParser {
@@ -93,7 +94,7 @@ impl RotationParser {
     fn new() -> Result<RotationParser, String> {
         let regex = Regex::new(r"^(L|R)(\d+)$")
             .map_err(|_| "Failed to construct regex to parse")?;
-        Result::Ok(RotationParser { regex })
+        Ok(RotationParser { regex })
     }
 
     fn parse(&self, line: &str) -> Result<i32, String> {
@@ -105,9 +106,9 @@ impl RotationParser {
         let count: i32 = count.parse().map_err(|_| format!("Failed to parse rotation count: {}", count))?;
 
         match direction {
-            "L" => Result::Ok(-count),
-            "R" => Result::Ok(count),
-            _ => Result::Err(format!("Unexpected rotation direction: {}", direction))
+            "L" => Ok(-count),
+            "R" => Ok(count),
+            _ => Err(format!("Unexpected rotation direction: {}", direction))
         }
     }
 }
