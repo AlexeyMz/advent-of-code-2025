@@ -14,7 +14,6 @@ fn basic() -> Result<(), String> {
     let input = read_to_string(get_data_path("input/puzzle02.txt")).unwrap();
 
     let ranges = parse_ranges(&input)?;
-    println!("Ranges: {:?}", ranges);
 
     let mut total = 0;
     for range in ranges {
@@ -22,7 +21,7 @@ fn basic() -> Result<(), String> {
             .into_iter()
             .filter(|r| digit_count(*r.start()) % 2 == 0)
             .collect();
-        println!("Split {:?} into even ranges: {:?}", range, even_ranges);
+        eprintln!("Split {:?} into even ranges: {:?}", range, even_ranges);
 
         for sub_range in even_ranges {
             let (ah, al) = split_in_half(*sub_range.start());
@@ -31,17 +30,17 @@ fn basic() -> Result<(), String> {
             if ah >= al && (ah < bh || ah <= bl) {
                 let id = merge_from_halves(ah, ah);
                 total += id;
-                println!(" - invalid ID: {}", id);
+                eprintln!(" - invalid ID: {}", id);
             }
             if bh > ah && bl >= bh {
                 let id = merge_from_halves(bh, bh);
                 total += id;
-                println!(" - invalid ID: {}", id);
+                eprintln!(" - invalid ID: {}", id);
             }
             for i in (ah + 1)..=(bh - 1) {
                 let id = merge_from_halves(i, i);
                 total += id;
-                println!(" - invalid ID: {}", id);
+                eprintln!(" - invalid ID: {}", id);
             }
         }
     }
@@ -55,19 +54,18 @@ fn advanced() -> Result<(), String> {
     let input = read_to_string(get_data_path("input/puzzle02.txt")).unwrap();
 
     let ranges = parse_ranges(&input)?;
-    println!("Ranges: {:?}", ranges);
 
     let mut total = 0;
     for range in ranges {
         let sub_ranges: Vec<RangeInclusive<i64>> = split_range_by_digit_count(range.clone());
-        println!("Split {:?} into sub ranges: {:?}", range, sub_ranges);
+        eprintln!("Split {:?} into sub ranges: {:?}", range, sub_ranges);
 
         for sub_range in sub_ranges {
             let digits = digit_count(*sub_range.start());
             for id in sub_range {
                 if can_construct_from_duplicated_part(id, digits) {
                     total += id;
-                    println!(" - invalid ID: {}", id);
+                    eprintln!(" - invalid ID: {}", id);
                 }
             }
         }
@@ -83,10 +81,10 @@ fn parse_ranges(input: &str) -> Result<Vec<RangeInclusive<i64>>, String> {
         .map(|range| {
             let boundaries: Vec<&str> = range.split("-").collect();
             if boundaries.len() == 2 {
-                let first = boundaries[0].parse::<i64>();
-                let second = boundaries[1].parse::<i64>();
-                if let (Ok(first), Ok(second)) = (first, second) {
-                    return Ok(first..=second);
+                let boundaries: Vec<_> = boundaries
+                    .into_iter().map(|s| s.parse::<i64>()).collect();
+                if let [Ok(first), Ok(second)] = &boundaries[..] {
+                    return Ok(*first..=*second);
                 }
             }
             Err(format!("Invalid range: {range}"))
