@@ -197,3 +197,20 @@ fn can_construct_from_duplicated_part(n: i64, digits: u32) -> bool {
     }
     return false;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_digits() {
+        assert_eq!(digit_count(-12), 0);
+        assert_eq!(digit_count(0), 1);
+        assert_eq!(digit_count(1), 1);
+        assert_eq!(digit_count(5), 1);
+        assert_eq!(digit_count(12), 2);
+        assert_eq!(digit_count(347), 3);
+        assert_eq!(digit_count(5000), 4);
+        assert_eq!(digit_count(123456789), 9);
+    }
+}
