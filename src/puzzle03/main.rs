@@ -51,18 +51,19 @@ fn advanced() -> Result<(), String> {
                 .take(take_count)
                 .max()
                 .unwrap();
-            let max_index = bank.iter()
+            let max_offset = bank.iter()
                 .skip(from_index)
                 .take(take_count)
-                .position(|&v| v == max).unwrap();
+                .position(|&v| v == max)
+                .unwrap();
 
-            for _ in 0..max_index {
+            for _ in 0..max_offset {
                 eprint!(".");
             }
             eprint!("^");
 
             joltage = joltage * 10 + (max as i64);
-            from_index += max_index + 1;
+            from_index += max_offset + 1;
         }
 
         for _ in from_index..bank.len() {
@@ -90,13 +91,7 @@ fn parse_battery_banks(input: &str) -> Result<Vec<BatteryBank>, String> {
 fn parse_battery_bank(line: &str) -> Result<BatteryBank, String> {
     line
         .chars()
-        .map(|c| {
-            if c.is_ascii_digit() {
-                Ok(((c as u32) - ('0' as u32)) as i32)
-            } else {
-                Err(())
-            }
-        })
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(|_| format!("Invalid battery bank: {line}"))
+        .map(|c| c.to_digit(10).map(|d| d as i32))
+        .collect::<Option<Vec<_>>>()
+        .ok_or_else(|| format!("Invalid battery bank: {line}"))
 }
