@@ -1,3 +1,5 @@
+use std::io::{LineWriter, Write};
+
 pub struct Grid<T> {
     data: Vec<T>,
     width: i32,
@@ -133,5 +135,12 @@ impl Grid<char> {
         let chunk_size = self.width.try_into().unwrap();
         self.data.chunks(chunk_size)
             .map(|line| line.into_iter().collect::<String>() + "\n")
+    }
+
+    pub fn write_into(&self, writer: &mut LineWriter<impl Write>) -> std::io::Result<()> {
+        for line in self.lines() {
+            writer.write_all(line.as_bytes())?;
+        }
+        Ok(())
     }
 }

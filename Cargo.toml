@@ -22,3 +22,7 @@ path = "src/puzzle02/main.rs"
 [[bin]]
 name = "puzzle03"
 path = "src/puzzle03/main.rs"
+
+[[bin]]
+name = "puzzle04"
+path = "src/puzzle04/main.rs"
