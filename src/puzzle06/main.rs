@@ -117,8 +117,8 @@ fn parse_problems_cephalopod(input: &str) -> Result<Vec<Problem>, String> {
         }
     }
 
-    let mut columns: Vec<Vec<i64>> = Vec::new();
-    let mut current_numbers: Vec<i64> = Vec::new();
+    let mut groups: Vec<Vec<i64>> = Vec::new();
+    let mut current_group: Vec<i64> = Vec::new();
     let column_count = rows.iter().map(|c| c.len()).max().unwrap_or(0);
     for i in 0..column_count {
         let column: Vec<_> = rows.iter()
@@ -129,20 +129,18 @@ fn parse_problems_cephalopod(input: &str) -> Result<Vec<Problem>, String> {
         let is_last = (i + 1) == column_count;
         if !column.is_empty() {
             let number = column.iter().fold(0, |acc, digit| acc * 10 + digit);
-            current_numbers.push(number);
+            current_group.push(number);
         }
 
-        if (column.is_empty() || is_last) && !current_numbers.is_empty() {
-            columns.push(current_numbers.into_iter().collect());
-            current_numbers = vec![];
+        if (column.is_empty() || is_last) && !current_group.is_empty() {
+            groups.push(current_group.into_iter().collect());
+            current_group = vec![];
         }
     }
 
     let problems = operators.into_iter()
-        .zip(columns.into_iter())
-        .map(|(op, numbers)| {
-            Problem { numbers, op }
-        })
+        .zip(groups.into_iter())
+        .map(|(op, numbers)| Problem { numbers, op })
         .collect();
 
     Ok(problems)
