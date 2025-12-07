@@ -25,7 +25,7 @@ fn basic() -> Result<(), String> {
 }
 
 fn advanced() -> Result<(), String> {
-    let input = read_to_string(get_data_path("input/puzzle06_test.txt")).unwrap();
+    let input = read_to_string(get_data_path("input/puzzle06.txt")).unwrap();
     let problems = parse_problems_cephalopod(&input)?;
 
     let mut total = 0;
@@ -100,7 +100,7 @@ fn parse_problems_normal(input: &str) -> Result<Vec<Problem>, String> {
 }
 
 fn parse_problems_cephalopod(input: &str) -> Result<Vec<Problem>, String> {
-    let mut rows: Vec<Vec<i64>> = Vec::new();
+    let mut rows: Vec<Vec<char>> = Vec::new();
     let mut operators: Vec<Operator> = Vec::new();
     for line in input.lines() {
         if line.is_empty() {
@@ -113,19 +113,37 @@ fn parse_problems_cephalopod(input: &str) -> Result<Vec<Problem>, String> {
                 .collect::<Option<Vec<_>>>()
                 .ok_or_else(|| format!("Failed to parse operators row: {line}"))?;
         } else {
-            let numbers = items.into_iter()
-                .map(|s| s.parse::<i64>())
-                .collect::<Result<Vec<_>, _>>()
-                .map_err(|_| format!("Failed to parse numbers row: {line}"))?;
-            rows.push(numbers);
+            rows.push(line.chars().collect());
         }
     }
 
-    let mut problems = vec![];
-    for (i, &op) in operators.iter().enumerate() {
-        let numbers = rows.iter().map(|row| row[i]).collect();
-        problems.push(Problem { numbers, op });
+    let mut columns: Vec<Vec<i64>> = Vec::new();
+    let mut current_numbers: Vec<i64> = Vec::new();
+    let column_count = rows.iter().map(|c| c.len()).max().unwrap_or(0);
+    for i in 0..column_count {
+        let column: Vec<_> = rows.iter()
+            .filter_map(|row| row.get(i))
+            .filter_map(|ch| ch.to_digit(10).map(|d| d as i64))
+            .collect();
+
+        let is_last = (i + 1) == column_count;
+        if !column.is_empty() {
+            let number = column.iter().fold(0, |acc, digit| acc * 10 + digit);
+            current_numbers.push(number);
+        }
+
+        if (column.is_empty() || is_last) && !current_numbers.is_empty() {
+            columns.push(current_numbers.into_iter().collect());
+            current_numbers = vec![];
+        }
     }
+
+    let problems = operators.into_iter()
+        .zip(columns.into_iter())
+        .map(|(op, numbers)| {
+            Problem { numbers, op }
+        })
+        .collect();
 
     Ok(problems)
 }
