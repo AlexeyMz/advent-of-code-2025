@@ -4,12 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+facet = "0.32.2"
+facet-json = "0.32.2"
 priority-queue = "2.7.0"
 regex = "1.12.2"
 
 [lib]
-name = "core"
-path = "src/core/lib.rs"
+name = "core_lib"
+path = "src/core_lib/lib.rs"
 
 [[bin]]
 name = "puzzle01"
@@ -38,3 +40,7 @@ path = "src/puzzle06/main.rs"
 [[bin]]
 name = "puzzle07"
 path = "src/puzzle07/main.rs"
+
+[[bin]]
+name = "puzzle08"
+path = "src/puzzle08/main.rs"

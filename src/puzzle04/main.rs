@@ -1,5 +1,5 @@
 //! Day 4: Printing Department
-use core::{Grid, MeasureElapsed, get_data_path};
+use core_lib::{Grid, MeasureElapsed, get_data_path};
 use std::{fs::{File, read_to_string}, io::{LineWriter, Write}};
 
 fn main() {

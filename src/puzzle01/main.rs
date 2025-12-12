@@ -1,5 +1,5 @@
 //! Day 1: Secret Entrance
-use core::{get_data_path, MeasureElapsed};
+use core_lib::{get_data_path, MeasureElapsed};
 use std::fs::{read_to_string};
 
 use regex::Regex;

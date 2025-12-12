@@ -1,5 +1,5 @@
 //! Day 6: Trash Compactor
-use core::{MeasureElapsed, get_data_path};
+use core_lib::{MeasureElapsed, get_data_path};
 use std::fs::read_to_string;
 
 fn main() {

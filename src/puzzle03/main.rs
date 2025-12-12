@@ -1,5 +1,5 @@
 //! Day 3: Lobby
-use core::{get_data_path, MeasureElapsed};
+use core_lib::{get_data_path, MeasureElapsed};
 use std::{fs::read_to_string};
 
 fn main() {

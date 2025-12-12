@@ -1,5 +1,5 @@
 //! Day 2: Gift Shop
-use core::{get_data_path, MeasureElapsed};
+use core_lib::{get_data_path, MeasureElapsed};
 use std::{collections::HashSet, fs::read_to_string, ops::RangeInclusive};
 
 fn main() {

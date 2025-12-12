@@ -1,5 +1,5 @@
 //! Day 5: Cafeteria
-use core::{MeasureElapsed, RangeSet, get_data_path};
+use core_lib::{MeasureElapsed, RangeSet, get_data_path};
 use std::fs::{read_to_string};
 
 fn main() {
