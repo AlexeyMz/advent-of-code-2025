@@ -1,4 +1,4 @@
-//! Day 7: Laboratories
+//! Day 8: Playground
 use core_lib::{KDSpace, KDTree, MeasureElapsed, get_data_path};
 use facet::Facet;
 use std::{fs::{File, read_to_string}, io::LineWriter};

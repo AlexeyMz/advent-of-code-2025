@@ -1,6 +1,6 @@
 pub trait KDSpace {
-    type Key: Eq + Clone + PartialOrd;
-    type Item: Ord + Clone;
+    type Key: Clone + Ord;
+    type Item: Clone + Ord;
     type Distance: PartialOrd + Copy;
     fn items(self) -> impl Iterator<Item = Self::Item>;
     fn get_key(item: &Self::Item, depth: usize) -> Self::Key;
@@ -20,31 +20,29 @@ struct KDNode<T> {
 
 impl<S: KDSpace> KDTree<S> {
     pub fn construct(space: S) -> KDTree<S> {
-        let root = Self::construct_node(space.items().collect(), 0);
+        let mut items: Vec<_> = space.items().collect();
+        let root = Self::construct_node(&mut items[..], 0);
         return KDTree { root };
     }
 
-    fn construct_node(items: Vec<S::Item>, depth: usize) -> Option<KDNode<S::Item>> {
+    fn construct_node(items: &mut [S::Item], depth: usize) -> Option<KDNode<S::Item>> {
         if items.len() == 0 {
             return None;
         }
-        let middle = items.len() / 2;
-        let middle_key = S::get_key(&items[middle], depth);
-        let (left_items, mut right_items): (Vec<_>, Vec<_>) = items.into_iter()
-            .partition(|item| S::get_key(item, depth) < middle_key);
 
-        let i = right_items.iter()
-            .position(|item| S::get_key(item, depth) == middle_key)
-            .unwrap_or(0);
-        let last_index = right_items.len() - 1;
-        right_items.swap(i, last_index);
-        let item = right_items.pop().unwrap();
+        items.sort_by_key(|item| S::get_key(item, depth));
 
+        let mut i = items.len() / 2;
+        while i > 0 && S::get_key(&items[i], depth) == S::get_key(&items[i - 1], depth) {
+            i -= 1;
+        }
+
+        let (left, right) = items.split_at_mut(i);
         return Some(KDNode {
-            item,
-            left: Self::construct_node(left_items, depth + 1)
+            item: right[0].clone(),
+            left: Self::construct_node(left, depth + 1)
                 .map(|n| Box::new(n)),
-            right: Self::construct_node(right_items, depth + 1)
+            right: Self::construct_node(&mut right[1..], depth + 1)
                 .map(|n| Box::new(n)),
         });
     }

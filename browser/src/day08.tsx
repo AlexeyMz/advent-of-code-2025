@@ -69,8 +69,8 @@ class Bricks {
       linePositions[lineOffset + 4] = to[1];
       linePositions[lineOffset + 5] = to[2];
 
-      const fromColor = new THREE.Color(makeColorForIndex(fromIndex));
-      const toColor = new THREE.Color(makeColorForIndex(toIndex));
+      const fromColor = new THREE.Color(makeColorLinear(i / DATA.edges.length));
+      const toColor = new THREE.Color(makeColorLinear((i + 0.5) / DATA.edges.length));
       lineColors[lineOffset + 0] = fromColor.r;
       lineColors[lineOffset + 1] = fromColor.g;
       lineColors[lineOffset + 2] = fromColor.b;
@@ -91,6 +91,10 @@ class Bricks {
     // this.cube.rotation.x += 0.01;
     // this.cube.rotation.y += 0.01;
   }
+}
+
+export function makeColorLinear(k: number): string {
+    return `hsl(${k * 360},100%,50%)`;
 }
 
 const support = checkGraphicsSupport();
