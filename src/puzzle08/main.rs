@@ -105,7 +105,7 @@ fn basic() -> Result<(), String> {
 }
 
 fn push_min_edge(
-    min_edges: &mut PriorityQueue<(usize, usize), JunctionDistance>,
+    min_edges: &mut PriorityQueue<(usize, usize), EdgePriority>,
     from_index: usize,
     boxes: &Vec<JunctionBox>,
     box_indices: &HashMap<JunctionBox, usize>,
@@ -122,7 +122,7 @@ fn push_min_edge(
             // eprintln!("Push {:?}: {distance}", normalize_edge((from_index, to_index)));
             min_edges.push(
                 (from_index, to_index),
-                JunctionDistance(distance)
+                EdgePriority(distance)
             );
         }
     }
@@ -196,17 +196,17 @@ impl KDSpace for JunctionBoxSpace {
 }
 
 #[derive(PartialEq)]
-struct JunctionDistance(f64);
+struct EdgePriority(f64);
 
-impl Eq for JunctionDistance {}
+impl Eq for EdgePriority {}
 
-impl PartialOrd for JunctionDistance {
+impl PartialOrd for EdgePriority {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         self.0.partial_cmp(&other.0).map(|ordering| ordering.reverse())
     }
 }
 
-impl Ord for JunctionDistance {
+impl Ord for EdgePriority {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.partial_cmp(&other).unwrap()
     }
